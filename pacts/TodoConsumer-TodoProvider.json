@@ -1,0 +1,46 @@
+{
+  "consumer": {
+    "name": "TodoConsumer"
+  },
+  "interactions": [
+    {
+      "description": "a request for todos",
+      "providerStates": [
+        {
+          "name": "todos exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/todos"
+      },
+      "response": {
+        "body": [
+          {
+            "id": 1,
+            "title": "Buy milk"
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "16.0.2"
+    },
+    "pactRust": {
+      "ffi": "0.4.28",
+      "models": "1.3.5"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "TodoProvider"
+  }
+}
