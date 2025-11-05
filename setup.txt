@@ -11,3 +11,7 @@ EDIT package.json script:test | "test": "NODE_OPTIONS=--experimental-vm-modules 
 RUN npm test -> generate pact
 
 
+---- Provider ----
+RUN npm i express
+CREATE provider.js
+
