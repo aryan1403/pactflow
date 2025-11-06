@@ -1,12 +1,25 @@
 import path from "path";
 import { Verifier } from "@pact-foundation/pact";
 import { server } from "./provider.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 describe("Pact Verification", () => {
   test("validates the expectations of TodoConsumer", async () => {
+    // const opts = {
+    //   providerBaseUrl: "http://localhost:3000",
+    //   pactUrls: [path.resolve(process.cwd(), "pacts/TodoConsumer-TodoProvider.json")],
+    // };
+
     const opts = {
       providerBaseUrl: "http://localhost:3000",
-      pactUrls: [path.resolve(process.cwd(), "pacts/TodoConsumer-TodoProvider.json")],
+      pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
+      provider: "TodoProvider",
+      consumerVersionSelectors: [{ latest: true }],
+      publishVerificationResult: true,
+      providerVersion: "1.0.0",
+      pactBrokerToken: process.env.PACT_BROKER_TOKEN,
     };
 
     const verifier = new Verifier(opts);

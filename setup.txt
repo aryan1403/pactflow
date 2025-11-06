@@ -15,3 +15,17 @@ RUN npm test -> generate pact
 RUN npm i express
 CREATE provider.js
 
+https://pactflow.io/
+
+API Token: 
+
+npm install -g @pact-foundation/pact-cli
+
+pact-broker publish ./pacts \
+  --consumer-app-version 1.0.0 \
+  --branch main \
+  --broker-base-url https://your-org.pactflow.io \
+  --broker-token <YOUR_PACTFLOW_TOKEN>
+
+
+
