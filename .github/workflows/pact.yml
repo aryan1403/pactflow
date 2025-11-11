@@ -1,0 +1,26 @@
+name: Pactflow pipiline
+on: [push]
+
+jobs:
+    pactflow:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v3
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '18'
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Run Pact tests
+              run: npm test
+
+            - name: Publish Pact contracts to Pactflow
+              env:
+                  PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+                  PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+              run: npx pact-cli publish ./pacts --broker-base-url $PACT_BROKER_BASE_URL --broker-token $PACT_BROKER_TOKEN
