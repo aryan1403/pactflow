@@ -23,4 +23,8 @@ jobs:
               env:
                   PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
                   PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
-              run: npx pact-broker publish ./pacts --broker-base-url $PACT_BROKER_BASE_URL --broker-token $PACT_BROKER_TOKEN
+              run: npx pact-broker publish ./pacts \
+                    --consumer-app-version $GITHUB_SHA \
+                    --branch main \
+                    --broker-base-url ${{ secrets.PACT_BROKER_BASE_URL }} \
+                    --broker-token ${{ secrets.PACT_BROKER_TOKEN }}
