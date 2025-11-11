@@ -24,7 +24,7 @@ jobs:
                   PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
                   PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
               run: npx pact-broker publish ./pacts \
-                    --consumer-app-version 1.0 \
+                    --consumer-app-version 1.0.0 \
                     --branch main \
                     --broker-base-url ${{ secrets.PACT_BROKER_BASE_URL }} \
                     --broker-token ${{ secrets.PACT_BROKER_TOKEN }}
