@@ -2,22 +2,20 @@ version: "3.8"
 services:
   pact-broker:
     image: pactfoundation/pact-broker
+    container_name: pact-broker
     ports:
       - "9292:9292"
     environment:
       PACT_BROKER_DATABASE_ADAPTER: "sqlite3"
       PACT_BROKER_DATABASE_NAME: "/pact_broker/db.sqlite3"
     volumes:
-      - ./pact_broker_data:/temp
+      - ./pact_broker_data:/tmp
 
   consumer:
     build: ./consumer
     container_name: todo-consumer
     depends_on:
       - pact-broker
-    environment:
-      PACT_BROKER_BASE_URL: "http://pact-broker:9292"
-    command: sh -c "npm install && npm test && npx pact-broker publish ./pacts --broker-base-url=http://pact-broker:9292"
     volumes:
       - ./pacts_data:/app/pacts
 

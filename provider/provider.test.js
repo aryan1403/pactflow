@@ -8,8 +8,8 @@ dotenv.config();
 describe("Pact Verification", () => {
   test("validates the expectations of TodoConsumer", async () => {
     const opts = {
-      providerBaseUrl: "http://localhost:3000",
-      pactUrls: [path.resolve(process.cwd(), "../consumer/pacts/TodoConsumer-TodoProvider.json")],
+      providerBaseUrl: process.env.PROVIDER_BASE_URL || "http://localhost:3000",
+      pactUrls: [path.resolve(process.cwd(), "pacts/todo_consumer-todo_provider.json")],
     };
 
     // const opts = {
