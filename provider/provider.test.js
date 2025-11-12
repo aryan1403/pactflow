@@ -9,7 +9,7 @@ describe("Pact Verification", () => {
   test("validates the expectations of TodoConsumer", async () => {
     const opts = {
       providerBaseUrl: "http://localhost:3000",
-      pactUrls: [path.resolve(process.cwd(), "pacts/TodoConsumer-TodoProvider.json")],
+      pactUrls: [path.resolve(process.cwd(), "../consumer/pacts/TodoConsumer-TodoProvider.json")],
     };
 
     // const opts = {
