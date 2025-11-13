@@ -4,6 +4,24 @@
   },
   "interactions": [
     {
+      "description": "a request for facts",
+      "request": {
+        "method": "GET",
+        "path": "/"
+      },
+      "response": {
+        "body": {
+          "data": [
+            "Cats sleep 70% of their lives."
+          ]
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
       "description": "a request for todos",
       "providerStates": [
         {
