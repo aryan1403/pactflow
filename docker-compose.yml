@@ -1,15 +1,26 @@
 version: "3.8"
 services:
   pact-broker:
-    image: pactfoundation/pact-broker
-    container_name: pact-broker
+    image: pactfoundation/pact-broker:latest
+    depends_on:
+      - postgres
+    environment:
+      PACT_BROKER_DATABASE_ADAPTER: postgres
+      PACT_BROKER_DATABASE_USERNAME: postgres
+      PACT_BROKER_DATABASE_PASSWORD: postgres
+      PACT_BROKER_DATABASE_HOST: postgres
+      PACT_BROKER_DATABASE_NAME: pactbroker
     ports:
       - "9292:9292"
+
+  postgres:
+    image: postgres:14
     environment:
-      PACT_BROKER_DATABASE_ADAPTER: "sqlite3"
-      PACT_BROKER_DATABASE_NAME: "/pact_broker/db.sqlite3"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pactbroker
     volumes:
-      - ./pact_broker_data:/tmp
+      - postgres_data:/var/lib/postgresql/data
 
   consumer:
     build: ./consumer
@@ -17,17 +28,18 @@ services:
     depends_on:
       - pact-broker
     volumes:
-      - ./pacts_data:/app/pacts
+      - ./consumer/pacts:/app/pacts
 
   provider:
     build: ./provider
     container_name: todo-provider
     depends_on:
       - pact-broker
+      - consumer
     ports:
       - "3000:3000"
     volumes:
-      - ./pacts_data:/app/pacts
+      - ./consumer/pacts:/app/pacts
     
   verifier:
     image: node:18-bullseye
@@ -43,5 +55,6 @@ services:
       PROVIDER_BASE_URL: "http://provider:3000"
 
 volumes:
+  postgres_data:
   pact_broker_data:
   pacts_data:

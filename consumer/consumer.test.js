@@ -5,9 +5,9 @@ import { getTodos } from "./consumer.js";
 const provider = new PactV3({
   consumer: "TodoConsumer",
   provider: "TodoProvider",
-  dir: path.resolve(process.cwd(), "pacts"),
-  logLevel: "info",
+  dir: path.resolve(process.cwd(), "../provider/pacts"), // 👈 THIS PATH IS IMPORTANT
 });
+
 
 
 describe("TodoApp consumer tests (Pact)", () => {
