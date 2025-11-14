@@ -1,0 +1,62 @@
+pipeline {
+  agent any
+
+  environment {
+    NODEJS_HOME = tool name: 'NodeJS25'
+    PATH = "${NODEJS_HOME}/bin:${env.PATH}"
+
+    PACT_BROKER_BASE_URL = credentials('PACTFLOW_BASE_URL')
+    PACT_BROKER_TOKEN = credentials('PACTFLOW_TOKEN')
+
+    PROVIDER_VERSION = "${env.BUILD_NUMBER}"
+  }
+
+  stages {
+
+    stage('Install dependencies') {
+      steps {
+        sh "npm install"
+      }
+    }
+
+    stage('Run Provider (background)') {
+      steps {
+        sh "nohup node src/provider.js &"
+      }
+    }
+
+    stage('Verify Pacts from PactFlow') {
+      steps {
+        sh """
+        npx pact-broker list-latest-pact-versions \
+          --pacticipant TodoConsumer \
+          --broker-base-url=${PACT_BROKER_BASE_URL} \
+          --broker-token=${PACT_BROKER_TOKEN}
+
+        npx pact-broker can-i-deploy \
+          --pacticipant TodoProvider \
+          --version ${PROVIDER_VERSION} \
+          --to-environment dev \
+          --broker-base-url=${PACT_BROKER_BASE_URL} \
+          --broker-token=${PACT_BROKER_TOKEN}
+
+        npm run pact:verify
+        """
+      }
+    }
+
+    stage('Publish Verification Results') {
+      steps {
+        sh """
+        npx pact-broker record-verification \
+          --provider TodoProvider \
+          --provider-app-version=${PROVIDER_VERSION} \
+          --success \
+          --pacticipant TodoConsumer \
+          --broker-base-url=${PACT_BROKER_BASE_URL} \
+          --broker-token=${PACT_BROKER_TOKEN}
+        """
+      }
+    }
+  }
+}

@@ -1,0 +1,54 @@
+pipeline {
+  agent any
+
+  environment {
+    NODEJS_HOME = tool name: 'NodeJS25'
+    PATH = "${NODEJS_HOME}/bin:${env.PATH}"
+
+    PACT_BROKER_BASE_URL = credentials('PACTFLOW_BASE_URL')
+    PACT_BROKER_TOKEN = credentials('PACTFLOW_TOKEN')
+
+    CONSUMER_VERSION = "${env.BUILD_NUMBER}"
+  }
+
+  stages {
+
+    stage('Install dependencies') {
+      steps {
+        sh "npm install"
+      }
+    }
+
+    stage('Run Consumer Tests & Generate Pacts') {
+      steps {
+        sh "npm test"
+      }
+    }
+
+    stage('Publish Pacts to PactFlow') {
+      steps {
+        sh """
+        npx pact-broker publish pacts \
+          --consumer-app-version=${CONSUMER_VERSION} \
+          --branch=${BRANCH_NAME} \
+          --auto-detect-version-properties \
+          --broker-base-url=${PACT_BROKER_BASE_URL} \
+          --broker-token=${PACT_BROKER_TOKEN}
+        """
+      }
+    }
+
+    stage('Create Verification Trigger') {
+      steps {
+        sh """
+        npx pact-broker can-i-deploy \
+          --pacticipant TodoConsumer \
+          --version ${CONSUMER_VERSION} \
+          --to-environment dev \
+          --broker-base-url ${PACT_BROKER_BASE_URL} \
+          --broker-token ${PACT_BROKER_TOKEN}
+        """
+      }
+    }
+  }
+}
