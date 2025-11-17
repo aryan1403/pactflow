@@ -1,5 +1,7 @@
 pipeline {
-  agent { label 'docker' }
+  agent {
+    label 'docker'
+  }
 
   environment {
     NODEJS_HOME = tool name: 'NodeJS25'
@@ -15,11 +17,7 @@ pipeline {
 
     stage('Install dependencies') {
       steps {
-        sh '''
-          apt-get update -y
-          apt-get install -y libatomic1
-          npm install
-        '''
+        sh "npm install"
       }
     }
 
@@ -49,8 +47,8 @@ pipeline {
           --pacticipant TodoConsumer \
           --version ${CONSUMER_VERSION} \
           --to-environment dev \
-          --broker-base-url ${PACT_BROKER_BASE_URL} \
-          --broker-token ${PACT_BROKER_TOKEN}
+          --broker-base-url=${PACT_BROKER_BASE_URL} \
+          --broker-token=${PACT_BROKER_TOKEN}
         """
       }
     }
