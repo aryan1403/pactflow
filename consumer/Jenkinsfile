@@ -1,10 +1,5 @@
 pipeline {
-  agent {
-    docker {
-      image 'node:18-bullseye'
-      args '-u root'
-    }
-  }
+  agent any
 
   environment {
     NODEJS_HOME = tool name: 'NodeJS25'
@@ -20,7 +15,11 @@ pipeline {
 
     stage('Install dependencies') {
       steps {
-        sh "npm install"
+        sh '''
+          sudo apt-get update -y
+          sudo apt-get install -y libatomic1
+          npm install
+        '''
       }
     }
 
@@ -50,8 +49,8 @@ pipeline {
           --pacticipant TodoConsumer \
           --version ${CONSUMER_VERSION} \
           --to-environment dev \
-          --broker-base-url=${PACT_BROKER_BASE_URL} \
-          --broker-token=${PACT_BROKER_TOKEN}
+          --broker-base-url ${PACT_BROKER_BASE_URL} \
+          --broker-token ${PACT_BROKER_TOKEN}
         """
       }
     }
