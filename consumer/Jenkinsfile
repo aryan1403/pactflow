@@ -1,6 +1,9 @@
 pipeline {
   agent {
-    label 'docker'
+    docker {
+      image 'node:18-bullseye'
+      args '-u root'   // Allow installing packages
+    }
   }
 
   environment {
@@ -10,23 +13,24 @@ pipeline {
     PACT_BROKER_BASE_URL = credentials('PACTFLOW_BASE_URL')
     PACT_BROKER_TOKEN = credentials('PACTFLOW_TOKEN')
 
-    CONSUMER_VERSION = "${env.BUILD_NUMBER}"
     PACT_DISABLE_FFI = "true"
+    CONSUMER_VERSION = "${env.BUILD_NUMBER}"
   }
 
   stages {
 
-    stage('Install system dependencies') {
+    stage('Show Node Version') {
+      steps {
+        sh "node -v"
+        sh "npm -v"
+      }
+    }
+
+    stage('Install system libraries') {
       steps {
         sh '''
-          if command -v apt-get >/dev/null 2>&1; then
-            apt-get update -y
-            apt-get install -y libatomic1
-          elif command -v yum >/dev/null 2>&1; then
-            yum install -y libatomic
-          elif command -v apk >/dev/null 2>&1; then
-            apk add --no-cache libatomic
-          fi
+          apt-get update -y
+          apt-get install -y libatomic1
         '''
       }
     }
