@@ -1,60 +1,42 @@
-version: "3.8"
+version: "3.9"
+
 services:
-  pact-broker:
-    image: pactfoundation/pact-broker:latest
-    depends_on:
-      - postgres
-    environment:
-      PACT_BROKER_DATABASE_ADAPTER: postgres
-      PACT_BROKER_DATABASE_USERNAME: postgres
-      PACT_BROKER_DATABASE_PASSWORD: postgres
-      PACT_BROKER_DATABASE_HOST: postgres
-      PACT_BROKER_DATABASE_NAME: pactbroker
-    ports:
-      - "9292:9292"
-
-  postgres:
-    image: postgres:14
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: pactbroker
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-  consumer:
-    build: ./consumer
-    container_name: todo-consumer
-    depends_on:
-      - pact-broker
-    volumes:
-      - ./consumer/pacts:/app/pacts
-
   provider:
     build: ./provider
-    container_name: todo-provider
-    depends_on:
-      - pact-broker
-      - consumer
+    container_name: pact-provider
+    command: ["npm", "start"]
     ports:
       - "3000:3000"
     volumes:
-      - ./consumer/pacts:/app/pacts
-    
+      - ./provider:/app
+      - ./pacts:/pacts
+    environment:
+      PROVIDER_URL: "http://provider:3000"
+    networks:
+      - pactnet
+
+  consumer-tests:
+    build: ./consumer
+    container_name: pact-consumer
+    command: ["npm", "run", "test:consumer"]
+    volumes:
+      - ./consumer:/app
+      - ./pacts:/pacts
+    networks:
+      - pactnet
+
   verifier:
-    image: node:18-bullseye
+    build: ./provider
     container_name: pact-verifier
+    command: ["npm", "run", "test:provider"]
     depends_on:
       - provider
-    working_dir: /app
     volumes:
       - ./provider:/app
-      - ./pacts_data:/app/pacts
-    command: ["npm", "run", "verify"]
-    environment:
-      PROVIDER_BASE_URL: "http://provider:3000"
+      - ./pacts:/pacts
+    networks:
+      - pactnet
 
-volumes:
-  postgres_data:
-  pact_broker_data:
-  pacts_data:
+networks:
+  pactnet:
+    driver: bridge

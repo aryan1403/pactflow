@@ -1,9 +1,11 @@
-FROM node:18-bullseye
+FROM node:18-alpine
 
 WORKDIR /app
+
 COPY package*.json ./
-RUN npm ci --no-audit --no-fund
+RUN npm install
+
 COPY . .
 
 EXPOSE 3000
-ENTRYPOINT [ "npm", "test" ]
+CMD ["npm", "start"]

@@ -4,7 +4,11 @@
   "description": "",
   "main": "consumer.js",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "start": "node provider.js",
+    "provider": "node provider.js",
+    "test:consumer": "jest consumer.test.js",
+    "test:provider": "jest provider.test.js"
   },
   "keywords": [],
   "author": "",

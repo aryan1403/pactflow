@@ -1,0 +1,241 @@
+{
+  "consumer": {
+    "name": "TodoConsumer"
+  },
+  "interactions": [
+    {
+      "description": "create todo",
+      "request": {
+        "body": {
+          "title": "New task"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/todos"
+      },
+      "response": {
+        "body": {
+          "id": 123,
+          "title": "New task"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "get cat facts",
+      "request": {
+        "method": "GET",
+        "path": "/facts"
+      },
+      "response": {
+        "body": {
+          "data": [
+            "Cats sleep 70%"
+          ]
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "health check",
+      "request": {
+        "method": "GET",
+        "path": "/health"
+      },
+      "response": {
+        "body": {
+          "status": "ok"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "delete todo",
+      "providerStates": [
+        {
+          "name": "single todo exists"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/todos/10"
+      },
+      "response": {
+        "body": {
+          "deleted": true
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "request for single todo",
+      "providerStates": [
+        {
+          "name": "single todo exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/todos/10"
+      },
+      "response": {
+        "body": {
+          "id": 10,
+          "title": "Test todo"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "update todo",
+      "providerStates": [
+        {
+          "name": "single todo exists"
+        }
+      ],
+      "request": {
+        "body": {
+          "title": "Updated"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "PUT",
+        "path": "/todos/10"
+      },
+      "response": {
+        "body": {
+          "id": 10,
+          "title": "Updated"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "get stats",
+      "providerStates": [
+        {
+          "name": "todos exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/stats"
+      },
+      "response": {
+        "body": {
+          "todoCount": 1
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "request for all todos",
+      "providerStates": [
+        {
+          "name": "todos exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/todos"
+      },
+      "response": {
+        "body": [
+          {
+            "id": 1,
+            "title": "Buy milk"
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "get single user",
+      "providerStates": [
+        {
+          "name": "users exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/users/1"
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "name": "John Doe"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "get users",
+      "providerStates": [
+        {
+          "name": "users exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/users"
+      },
+      "response": {
+        "body": [
+          {
+            "id": 1,
+            "name": "John Doe"
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "12.5.2"
+    },
+    "pactRust": {
+      "ffi": "0.4.20",
+      "models": "1.2.0"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "TodoProvider"
+  }
+}

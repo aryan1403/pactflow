@@ -1,23 +1,27 @@
 import path from "path";
 import { Verifier } from "@pact-foundation/pact";
 import { server } from "./provider.js";
-import dotenv from "dotenv";
 
-dotenv.config();
+afterAll(() => server.close());
 
-afterAll(() => {
-  server.close();
-});
+describe("Provider Pact Verification", () => {
+  test(
+    "validates all consumer expectations",
+    async () => {
+      const verifier = new Verifier({
+        providerBaseUrl: "http://localhost:3000",
+        pactUrls: [path.resolve(process.cwd(), "../pacts/TodoConsumer-TodoProvider.json")],
+        stateHandlers: {
+          "todos exist": async () => true,
+          "single todo exists": async () => true,
+          "users exist": async () => true,
+          "no todos": async () => true,
+        }
+      });
 
-describe("Pact Verification", () => {
-  test("validates the expectations of TodoConsumer", async () => {
-  const opts = {
-    providerBaseUrl: process.env.PROVIDER_BASE_URL || "http://todo-provider:3000",
-    pactUrls: [path.resolve(process.cwd(), "pacts/TodoConsumer-TodoProvider.json")],
-  };
-
-  const verifier = new Verifier(opts);
-  const output = await verifier.verifyProvider();
-  console.log("✅ Pact Verification Complete:\n", output);
-}, 20000); // ⬅️ Increase timeout to 20 seconds
+      const result = await verifier.verifyProvider();
+      console.log("Pact Verification Complete:", result);
+    },
+    20000
+  );
 });
