@@ -22,10 +22,10 @@ API Token:
 npm install -g @pact-foundation/pact-cli
 
 pact-broker publish ./pacts \
-  --consumer-app-version 1.0.0 \
+  --consumer-app-version 1.0.2 \
   --branch main \
-  --broker-base-url https://your-org.pactflow.io \
-  --broker-token <YOUR_PACTFLOW_TOKEN>
+  --broker-base-url https://techx-incorporation.pactflow.io \
+  --broker-token OjQ893bDiqVAjoCj5tT4dg
 
 
 
