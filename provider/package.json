@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node provider.js",
     "verify": "npm test",
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:provider": "jest --runInBand"
   },
   "dependencies": {
     "dotenv": "^17.2.3",

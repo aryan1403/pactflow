@@ -1,41 +1,31 @@
-version: "3.9"
-
 services:
-  provider:
-    build: ./provider
-    container_name: pact-provider
-    command: ["npm", "start"]
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./provider:/app
-      - ./pacts:/pacts
-    environment:
-      PROVIDER_URL: "http://provider:3000"
-    networks:
-      - pactnet
-
-  consumer-tests:
+  pact-consumer:
     build: ./consumer
     container_name: pact-consumer
     command: ["npm", "run", "test:consumer"]
     volumes:
-      - ./consumer:/app
-      - ./pacts:/pacts
+      - ./consumer/pacts:/app/pacts
     networks:
       - pactnet
 
-  verifier:
+  pact-provider:
+    build: ./provider
+    container_name: pact-provider
+    command: ["npm", "start"]
+    networks:
+      - pactnet
+    ports:
+      - "3000:3000"
+
+  pact-verifier:
     build: ./provider
     container_name: pact-verifier
     command: ["npm", "run", "test:provider"]
-    depends_on:
-      - provider
-    volumes:
-      - ./provider:/app
-      - ./pacts:/pacts
     networks:
       - pactnet
+    depends_on:
+      - pact-provider
+      - pact-consumer
 
 networks:
   pactnet:

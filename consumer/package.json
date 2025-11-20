@@ -4,7 +4,8 @@
   "description": "",
   "main": "consumer.js",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:consumer": "jest --runInBand"
   },
   "dependencies": {
     "node-fetch": "^3.3.2"
